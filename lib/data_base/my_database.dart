@@ -45,4 +45,15 @@ class MyDatabase {
     return docRef.set(room);
   }
 
+  static Future<List<Room>> loadRooms() async {
+    var querySnapshot = await getRoomsCollection()
+        .get();
+    return querySnapshot.docs
+        .map((queryDocSnapshot) => queryDocSnapshot.data()).toList();
+
+  }
+
+
+
+
 }

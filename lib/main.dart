@@ -1,6 +1,7 @@
 
 import 'package:chat_app_flutter/firebase_options.dart';
 import 'package:chat_app_flutter/ui/addRoom/add_room_screen.dart';
+import 'package:chat_app_flutter/ui/chat/chat_thread.dart';
 import 'package:chat_app_flutter/ui/home/home_screen.dart';
 import 'package:chat_app_flutter/ui/login/login_screen.dart';
 import 'package:chat_app_flutter/ui/registeration/register_screen.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
 
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
       initialRoute: LoginScreen.routeName,
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
         RegisterScreen.routeName : (_)=>RegisterScreen(),
         LoginScreen.routeName : (_)=>LoginScreen(),
         HomeScreen.routeName : (_)=>HomeScreen(),
-        AddRoomScreen.routeName:(_)=>AddRoomScreen()
+        AddRoomScreen.routeName:(_)=>AddRoomScreen(),
+        ChatThread.routeName:(_)=>ChatThread()
       },
 
     );

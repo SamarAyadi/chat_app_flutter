@@ -1,6 +1,7 @@
 import 'package:chat_app_flutter/base/base.dart';
 import 'package:chat_app_flutter/ui/addRoom/add_room_screen.dart';
 import 'package:chat_app_flutter/ui/home/home_viewModel.dart';
+import 'package:chat_app_flutter/ui/home/room_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,13 @@ class _HomeScreenState extends BaseState<HomeScreen, HomeViewModel>
   @override
   HomeViewModel initViewModel() {
     return HomeViewModel();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.loadRooms();
   }
 
   @override
@@ -47,7 +55,29 @@ class _HomeScreenState extends BaseState<HomeScreen, HomeViewModel>
                   ),
                 ),
               ),
-          body: Container(),
+            body: Column(
+              children: [
+                Expanded(
+                  child: Consumer<HomeViewModel>(
+                  builder: (buildContext, homeViewModel, _){
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // Number of columns in the grid
+                        mainAxisSpacing: 12, // Spacing between rows
+                        crossAxisSpacing:12, // Spacing between columns
+                      ),
+                      itemBuilder: (_, index) {
+                        return RoomWidget(homeViewModel.rooms[index]); // Assuming `rooms` is a list of Room objects
+                      },
+                      itemCount: homeViewModel.rooms.length,
+
+                    );
+                  }
+                  ),
+                ),
+              ],
+            ),
+
             floatingActionButton: FloatingActionButton(
                 onPressed: (){
                Navigator.pushNamed(context, AddRoomScreen.routeName);
