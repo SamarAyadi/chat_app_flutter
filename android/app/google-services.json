@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "785413012407",
+    "project_id": "chat-app-flutter-f0159",
+    "storage_bucket": "chat-app-flutter-f0159.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785413012407:android:93a53327b11d634c39c632",
+        "android_client_info": {
+          "package_name": "com.pingucoder.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkPV8jS4475WqRytB9ME758t0iGxHGBH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
