@@ -44,5 +44,14 @@ class LoginViewModel extends BaseViewModel<LoginNavigator> {
       }
   }
 
+  void checkLoggedInUser() async {
+    if (auth.currentUser != null) {
+      var retrievedUser = await MyDatabase.getUserById(auth.currentUser?.uid ?? '');
+      SharedData.user = retrievedUser;
+      navigator?.gotoHome();
+    }
+  }
+
+
 
 }

@@ -30,6 +30,7 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginViewModel>
   }
   @override
   Widget build(BuildContext context) {
+    viewModel.checkLoggedInUser();
     return ChangeNotifierProvider(
       create: (_) => viewModel,
       child: Container(
