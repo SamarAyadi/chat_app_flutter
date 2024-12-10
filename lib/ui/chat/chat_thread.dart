@@ -1,6 +1,10 @@
 import 'package:chat_app_flutter/base/base.dart';
+import 'package:chat_app_flutter/data_base/my_database.dart';
+import 'package:chat_app_flutter/model/message.dart';
 import 'package:chat_app_flutter/model/room.dart';
 import 'package:chat_app_flutter/ui/chat/chat_view_model.dart';
+import 'package:chat_app_flutter/ui/chat/message_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +25,11 @@ implements ChatNavigator{
   }
   late Room room;
 
+  var messageController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     room = ModalRoute.of(context)?.settings.arguments as Room;
+    viewModel.room = room;
     return ChangeNotifierProvider(
       create: (_)=>viewModel,
       child: Container(
@@ -46,14 +52,46 @@ implements ChatNavigator{
               margin: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
               elevation: 18,
             color: Colors.white,
+
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
-                  Expanded(child: Container(
-                    color: Colors.amber,
-                  )),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot<Message>>(
+                      stream: MyDatabase.getMessagesCollection(room.id ?? '')
+                          .orderBy('dateTime', descending: true).snapshots(),
+                      builder: (buildContext, asyncSnapshot) {
+                        if (asyncSnapshot.hasError) {
+                          return Center(
+                            child: Text('Something went wrong'),
+                          );
+                        } else if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        var data = asyncSnapshot.data?.docs.map((doc) => doc.data()).toList();
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.separated(
+                            reverse: true ,
+                            itemBuilder: (buildContext, index) {
+                              return MessageWidget(data![index]);
+                            },
+                            itemCount: data?.length ?? 0,
+                            separatorBuilder: (_,__){
+                              return SizedBox(height: 8,);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  ,
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -65,6 +103,7 @@ implements ChatNavigator{
                               borderRadius: BorderRadius.only(topRight: Radius.circular(12))
                             ),
                             child: TextField(
+                              controller: messageController,
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(4),
                                 hintText: 'Your message here'
@@ -73,19 +112,24 @@ implements ChatNavigator{
                           ),
                         ),
                         SizedBox(width: 4,),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.blue
-                          ),
-                          child: Row(
-                            children: [
-                              Text('Send',
-                              style: TextStyle(
-                                color: Colors.white
-                              ),),
-                              Icon(Icons.send, color: Colors.white)
-                            ],
+                        InkWell(
+                          onTap: (){
+                            viewModel.send(messageController.text);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.blue
+                            ),
+                            child: Row(
+                              children: [
+                                Text('Send',
+                                style: TextStyle(
+                                  color: Colors.white
+                                ),),
+                                Icon(Icons.send, color: Colors.white)
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -98,5 +142,10 @@ implements ChatNavigator{
 
       ),
     );
+  }
+
+  @override
+  void clearMessageText() {
+    messageController.clear();
   }
 }

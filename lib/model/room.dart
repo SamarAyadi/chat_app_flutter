@@ -1,3 +1,5 @@
+
+
 class Room {
   static const String collectionName = 'room';
 
@@ -5,6 +7,7 @@ class Room {
   String? title;
   String? description;
   String? catId;
+
 
   Room({this.id, this.title, this.description, this.catId});
 

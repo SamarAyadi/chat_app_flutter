@@ -1,3 +1,4 @@
+import 'package:chat_app_flutter/model/message.dart';
 import 'package:chat_app_flutter/model/my_user.dart';
 import 'package:chat_app_flutter/model/room.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,6 +53,26 @@ class MyDatabase {
         .map((queryDocSnapshot) => queryDocSnapshot.data()).toList();
 
   }
+
+  static CollectionReference<Message> getMessagesCollection(String roomId) {
+    return FirebaseFirestore.instance
+        .collection(Room.collectionName)
+        .doc(roomId)
+        .collection(Message.collectionName)
+        .withConverter<Message>(
+      fromFirestore: (snapshot, options) =>
+          Message.fromFireStore(snapshot.data()!),
+      toFirestore: (message, options) =>
+          message.toFireStore(),
+    );
+  }
+
+  static Future<void> sendMessage(String roomId, Message message) {
+    var messageDoc = getMessagesCollection(roomId).doc();
+    message.id = messageDoc.id;
+    return messageDoc.set(message);
+  }
+
 
 
 
